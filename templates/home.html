@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class=""border-bottom mb-4"> Test </legend>
+                <div class="form-group">
+                    {{ form.artist.label(class="form-control-label") }}
+                    {{ form.artist(class="form-control form-control-lg") }}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.search(class="btn btn-outline-info") }}
+            </div>
+
+        </form>
+    </div>
+
+    {% for artist in artists %}
+        <h2>{{ artist.name }}</h2>
+        <h2> <img src="{{ artist.picture }}" width=300></h2>
+    {% endfor %}
+{% endblock content %}
