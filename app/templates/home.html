@@ -17,9 +17,14 @@
 
         </form>
     </div>
-
-    {% for artist in artists %}
-        <h2>{{ artist.name }}</h2>
-        <h2> <img src="{{ artist.picture }}" width=300></h2>
+    <h2>Happy songs!!! :)</h2>
+    {% for song in happy_songs.name %}
+        <p>{{ song }}</p>
+    {% endfor %}
+    <h2>Sad songs... :(</h2>
+    {% for song in sad_songs.name %}
+        <p>{{ song }}</p>
+{#        <h2>{{ artist.name }}</h2>#}
+{##        <h2> <img src="{{ artist.picture }}" width=300></h2>#}
     {% endfor %}
 {% endblock content %}
