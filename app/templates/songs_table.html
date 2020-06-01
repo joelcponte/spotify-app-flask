@@ -1,0 +1,23 @@
+{% for label in songs.label.drop_duplicates().dropna() %}
+    <h2 class="my-4">{{ label }}</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Song</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for _, song in songs[songs.label==label].iterrows() %}
+                <tr>
+                    <td><a>{{ song["name"] }}</a></td>
+                    <td class="text-right"><a class="btn btn-danger btn-sm" href="/delete/{{ song["uri"] }}" role="button">Delete</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'add_remove_buttons.html' %}
+    <p></p>
+
+{% endfor %}

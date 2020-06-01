@@ -1,9 +1,9 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
+import numpy as np
 
-
-class SpotifySearcher():
+class SpotifySearcher:
 
     def __init__(self):
         self.sp = spotipy.Spotify(
@@ -33,6 +33,15 @@ class Classifier:
 
     def __init__(self):
         pass
+
+    def get_labels(self, df):
+        if df is not None:
+            df["label"] = None
+            df.loc[df.danceability > 0.8, "label"] = "happy"
+            df.loc[df.danceability < 0.2, "label"] = "sad"
+            return df["label"]
+        else:
+            np.nan
 
     def get_happy(self, df):
         if df is not None:

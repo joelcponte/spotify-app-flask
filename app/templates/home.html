@@ -1,30 +1,22 @@
 {% extends "layout.html" %}
 {% block content %}
-
+<div class="container">
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
-            <fieldset class="form-group">
-                <legend class=""border-bottom mb-4"> Test </legend>
-                <div class="form-group">
-                    {{ form.artist.label(class="form-control-label") }}
-                    {{ form.artist(class="form-control form-control-lg") }}
+            <div class="form-row">
+                <div class="col-sm-10 my-1">
+                    {{ form.artist(class="form-control ", placeholder="Search for an artist") }}
                 </div>
-            </fieldset>
-            <div class="form-group">
-                {{ form.search(class="btn btn-outline-info") }}
+                <div class="col-sm-2 my-1">
+                    {{ form.search(type="submit", class="btn btn-primary btn-block") }}
+                </div>
             </div>
-
         </form>
+
     </div>
-    <h2>Happy songs!!! :)</h2>
-    {% for song in happy_songs.name %}
-        <p>{{ song }}</p>
-    {% endfor %}
-    <h2>Sad songs... :(</h2>
-    {% for song in sad_songs.name %}
-        <p>{{ song }}</p>
-{#        <h2>{{ artist.name }}</h2>#}
-{##        <h2> <img src="{{ artist.picture }}" width=300></h2>#}
-    {% endfor %}
+
+</div>
+
+{% include 'songs_table.html' %}
 {% endblock content %}
