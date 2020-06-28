@@ -6,7 +6,7 @@ from app import app, db
 from datetime import datetime
 from app.spotify import SpotifySearcher, Classifier
 from app.helpers import get_session_var
-
+import pickle
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
@@ -18,33 +18,30 @@ def home():
     ) + 1
     searcher = SpotifySearcher()
     form = SearchForm()
-    clf = Classifier()
+    clf = pickle.load(open("app/assets/model.pkl", "rb"))
     import pandas as pd
     import numpy as np
     df = pd.DataFrame(columns=["name", "label"])
-    # happy_songs = get_session_var("happy_songs", session, return_if_missing=df)
-    # sad_songs = get_session_var("sad_songs", session,  return_if_missing=df)
     session_songs = get_session_var("session_songs", session,  return_if_missing=df)
+    # session_labels = get_session_var("session_labels", session,  return_if_missing=df)
     if form.validate_on_submit():
         search = Searches(search_field=form.artist.data, date=datetime.now())
         db.session.add(search)
         db.session.commit()
         songs = searcher.search_artist_songs(form.artist.data)
-
-        songs["label"] = clf.get_labels(songs)
-        songs = songs.dropna(subset=["label"])[["name",  "label", "uri"]]
+        # labels = pd.DataFrame(clf.get_labels(songs)).astype(bool)
+        songs["label"] = clf.predict_labels(songs, probability_threshold=0.9)
+        songs = songs[["name",  "uri", "label"]].dropna(subset=["label"])
         session_songs = pd.concat([session_songs, songs]).drop_duplicates().reset_index(drop=True)
+        # session_labels = pd.concat([session_labels, labels]).drop_duplicates().reset_index(drop=True)
         session["session_songs"] = session_songs.to_json()
+        # session["session_labels"] = session_labels.to_json()
 
         flash(f'Done!', 'success')
         return render_template('home.html', form=form,
-                               songs=session_songs,
-                               happy_songs=session_songs[session_songs.label=="happy"],
-                               sad_songs=session_songs[session_songs.label=="sad"])
+                               songs=session_songs)
     return render_template('home.html', form=form,
-                           songs=session_songs,
-                           happy_songs=session_songs[session_songs.label=="happy"],
-                           sad_songs=session_songs[session_songs.label=="sad"])
+                           songs=session_songs)
 
 @app.route('/delete/<string:uri>')
 def remove(uri):
